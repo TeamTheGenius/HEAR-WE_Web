@@ -6,3 +6,18 @@ export interface ProfileImageInputProps extends ProfileImageProps {
 }
 
 export type SocialProvider = 'google' | 'naver' | 'kakao';
+
+export interface ProfileValidationState {
+  isDuplicateChecked: boolean;
+  isUnique: boolean;
+}
+
+export interface ProfileValidationUpdate {
+  updateNicknameDuplicateCheck: (isChecked: boolean) => void;
+  updateNicknameUniqueness: (isUnique: boolean) => void;
+}
+
+export interface ProfileValidationReturn {
+  state: ProfileValidationState;
+  update: ProfileValidationUpdate;
+}

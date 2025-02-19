@@ -9,6 +9,7 @@ import {
   InputHTMLAttributes,
   forwardRef,
   ForwardedRef,
+  ButtonHTMLAttributes,
 } from 'react';
 import styles from './index.module.scss';
 import Button, { type ButtonType } from '../Button';
@@ -28,11 +29,10 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hasError: boolean;
 }
 
-interface ButtonProps extends PropsWithChildren {
+interface ButtonProps extends PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>> {
   variant?: ButtonType;
   text: string;
   onClick?: () => void;
-  disabled?: boolean;
 }
 
 interface MessageProps extends PropsWithChildren {
@@ -108,17 +108,8 @@ function Message({ children, variant }: MessageProps) {
   return <span className={cn(styles[`${variant}-message`], styles.message)}>{children}</span>;
 }
 
-function Action({ text, variant = 'secondary', onClick, disabled }: ButtonProps) {
-  return (
-    <Button
-      variant={variant}
-      text={text}
-      size="medium"
-      onClick={onClick}
-      className={styles.button}
-      disabled={disabled}
-    />
-  );
+function Action({ text, variant = 'secondary', onClick, ...props }: ButtonProps) {
+  return <Button variant={variant} text={text} size="medium" onClick={onClick} className={styles.button} {...props} />;
 }
 
 export const TextInput = Object.assign(Main, {

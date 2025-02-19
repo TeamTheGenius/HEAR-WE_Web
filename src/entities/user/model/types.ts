@@ -6,6 +6,6 @@ export interface ProfileImageProps {
 }
 
 export interface UserInfoType {
-  image: FileList | undefined;
+  image: FileList;
   nickname: string;
 }

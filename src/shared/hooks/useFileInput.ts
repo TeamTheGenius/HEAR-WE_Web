@@ -2,17 +2,9 @@ import { useRef, useState } from 'react';
 import type { UseFormRegister, FieldValues, Path } from 'react-hook-form';
 import { validateFileSize } from '../lib/fileValidation';
 
-interface FileState {
-  src: string;
-  file: File | null;
-}
-
 export const useFileInput = <T extends FieldValues>(register: UseFormRegister<T>, fieldName: Path<T>) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [previousImage, setPreviousImage] = useState<FileState>({
-    src: '',
-    file: null,
-  });
+  const [previousFile, setPreviousFile] = useState<File>();
 
   const handleFileInputRef = (element: HTMLInputElement) => {
     register(fieldName).ref(element);
@@ -27,10 +19,10 @@ export const useFileInput = <T extends FieldValues>(register: UseFormRegister<T>
     const selectedFile = e.target.files?.[0];
 
     if (!selectedFile) {
-      if (!previousImage.file) return;
+      if (!previousFile) return;
 
       const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(previousImage.file);
+      dataTransfer.items.add(previousFile);
 
       if (inputRef.current) {
         inputRef.current.files = dataTransfer.files;
@@ -40,12 +32,7 @@ export const useFileInput = <T extends FieldValues>(register: UseFormRegister<T>
       return;
     }
 
-    if (previousImage.src) {
-      URL.revokeObjectURL(previousImage.src);
-    }
-
-    const newPreviewURL = URL.createObjectURL(selectedFile);
-    setPreviousImage({ src: newPreviewURL, file: selectedFile });
+    setPreviousFile(selectedFile);
   };
 
   const validateFirstFileSize = (files: FileList | undefined) => {
@@ -60,12 +47,11 @@ export const useFileInput = <T extends FieldValues>(register: UseFormRegister<T>
   });
 
   return {
-    previousImage,
     handlers: {
       handleInputClick,
       handleFileChange,
       handleFileInputRef,
-      fileRegister,
     },
+    fileRegister,
   };
 };
